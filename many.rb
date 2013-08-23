@@ -1,5 +1,13 @@
 #!/usr/bin/env ruby
 
+# Abuse the pipes:
+# `mkfifo cvPipe.jpg`
+# In window 1:
+#   - `tail -f cvPipe.jpg | ffmpeg  -y -f mjpeg -r 5 -i - output.avi`
+#
+# In window 2:
+#   - `./many.rb`
+#
 #./many.rb | ffmpeg  -y -f mjpeg -r 5 -i - -an output.avi
 
 require 'socket'
@@ -20,10 +28,7 @@ fork do
         color = CvColor::Blue
         image.rectangle! region.top_left, region.bottom_right, color: color
       end
-      #puts image.methods.sort
-      #File.binwrite('mark.jpg', image.data)
-      #puts image.encode('.jpg')
-      #image.save_image('ex.jpg')
+      image.save_image('cvPipe.jpg') # a named pipe
       #IO.copy_stream image.data, STDOUT
     end
   end 
